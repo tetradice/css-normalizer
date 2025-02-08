@@ -22,6 +22,8 @@
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.13.1",
     "@primevue/nuxt-module": "^4.2.5",
+    "@types/postcss-safe-parser": "^5.0.4",
+    "@vueuse/core": "^12.5.0",
     "postcss": "^8.5.1",
     "postcss-safe-parser": "^7.0.1",
     "sass": "^1.84.0",
