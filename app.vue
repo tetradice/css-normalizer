@@ -4,18 +4,26 @@ import { useDebounce, watchDebounced } from "@vueuse/core";
 const source = ref("");
 const output = ref("");
 
+const codeMirrorOptions = {
+  mode: "text/css",
+};
+
 watchDebounced(
   source,
   async () => {
-    const res = await useFetch("/api/convert", {
-      method: "post",
-      body: { source: source.value },
-    });
+    if (source.value.trim().length >= 1) {
+      const res = await useFetch("/api/convert", {
+        method: "post",
+        body: { source: source.value },
+      });
 
-    if (res.data.value?.result) {
-      output.value = res.data.value.result;
+      if (res.data.value?.result) {
+        output.value = res.data.value.result;
+      } else {
+        output.value = "[ERROR!]";
+      }
     } else {
-      output.value = "[ERROR!]";
+      output.value = "";
     }
   },
   { debounce: 500, maxWait: 3000 }
@@ -34,27 +42,28 @@ watchDebounced(
       <p>「2つのCSS/SCSSの内容が同じかどうか」を比較したいときに便利です。</p>
 
       <div class="grid grid-cols-2 grid-rows-1 gap-4 p-2">
-        <FloatLabel variant="on" class="w-full">
-          <Textarea
+        <div variant="on" class="w-full">
+          <label>正規化したいCSS/SCSSを入力してください</label>
+          <Codemirror
             id="over_label"
-            v-model="source"
+            v-model:value="source"
             rows="30"
-            cols="30"
             class="w-full"
+            height="40em"
           />
-          <label for="on_label">正規化したいCSS/SCSSを入力してください</label>
-        </FloatLabel>
+        </div>
 
-        <FloatLabel variant="on" class="w-full">
-          <Textarea
+        <div variant="on" class="w-full">
+          <label>正規化結果</label>
+          <Codemirror
             id="over_label"
-            v-model="output"
+            v-model:value="output"
+            :options="codeMirrorOptions"
             rows="30"
-            cols="30"
             class="w-full"
+            height="40em"
           />
-          <label for="on_label">正規化結果</label>
-        </FloatLabel>
+        </div>
       </div>
     </div>
   </div>
