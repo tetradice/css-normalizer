@@ -29,6 +29,7 @@
     "@vueuse/core": "^12.5.0",
     "postcss": "^8.5.1",
     "postcss-safe-parser": "^7.0.1",
+    "prettier": "3.5.0",
     "sass": "^1.84.0",
     "tailwindcss-primeui": "^0.4.0"
   }

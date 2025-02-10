@@ -1,6 +1,7 @@
 import postcss from "postcss";
 import safeParser from "postcss-safe-parser";
 import * as sass from "sass";
+import * as prettier from "prettier";
 
 // CSS/SCSSをパースしてネスト形式またはフラット形式に変換
 async function parseSCSS(
@@ -97,8 +98,10 @@ function cssStringify(styles: Record<string, any>): string {
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const compiled = await parseSCSS(body.source, true);
+  const scssText = scssStringify(compiled);
+  const scssFormattedText = await prettier.format(scssText, { parser: "scss" });
 
   return {
-    result: scssStringify(compiled),
+    result: scssFormattedText,
   };
 });
