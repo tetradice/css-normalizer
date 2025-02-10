@@ -37,11 +37,12 @@ watchDebounced(
     <div class="max-w-screen-xl mx-auto">
       <p>左側に貼り付けたCSS/SCSSを構文解析し、以下の正規化を行います。</p>
       <ul>
-        <li></li>
+        <li>・SCSSに再変換</li>
+        <li>・その際、ネスト形式でまとめられそうなものはまとめる</li>
       </ul>
       <p>「2つのCSS/SCSSの内容が同じかどうか」を比較したいときに便利です。</p>
 
-      <div class="grid grid-cols-2 grid-rows-1 gap-4 p-2">
+      <div class="grid grid-cols-2 grid-rows-1 gap-4 p-2 mt-8">
         <div variant="on" class="w-full">
           <label>正規化したいCSS/SCSSを入力してください</label>
           <Codemirror

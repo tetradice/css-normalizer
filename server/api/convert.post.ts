@@ -1,13 +1,15 @@
 import postcss from "postcss";
 import safeParser from "postcss-safe-parser";
-import sass from "sass";
+import * as sass from "sass";
 
 // CSS/SCSSをパースしてネスト形式またはフラット形式に変換
-async function parseCSS(
+async function parseSCSS(
   content: string,
   nested: boolean
 ): Promise<Record<string, any>> {
-  const root = await postcss().process(content, { parser: safeParser });
+  const root = await postcss().process(compileSCSS(content), {
+    parser: safeParser,
+  });
   const styles: Record<string, any> = {};
 
   root.root.walkRules((rule) => {
@@ -49,8 +51,8 @@ function addToNestedStructure(
 }
 
 // SCSSをCSSに変換
-function compileSCSS(filePath: string): string {
-  return sass.compile(filePath).css;
+function compileSCSS(content: string): string {
+  return sass.compileString(content).css;
 }
 
 // ネスト構造をSCSS文字列に変換
@@ -94,7 +96,7 @@ function cssStringify(styles: Record<string, any>): string {
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const compiled = await parseCSS(body.source, true);
+  const compiled = await parseSCSS(body.source, true);
 
   return {
     result: scssStringify(compiled),
