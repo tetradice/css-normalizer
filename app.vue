@@ -3,18 +3,20 @@ import { useDebounce, watchDebounced } from "@vueuse/core";
 
 const source = ref("");
 const output = ref("");
+const scssCompileOnly = ref(false);
 
 const codeMirrorOptions = {
   mode: "text/css",
 };
 
 watchDebounced(
-  source,
+  [source],
   async () => {
     if (source.value.trim().length >= 1) {
       const res = await useFetch("/api/convert", {
         method: "post",
         body: { source: source.value },
+        params: {scssCompileOnly: (scssCompileOnly.value ? true : undefined)},
       });
 
       if (res.data.value?.result) {
@@ -66,6 +68,11 @@ watchDebounced(
           />
         </div>
       </div>
+
+      <div class="flex items-center gap-2">
+        <Checkbox v-model="scssCompileOnly" inputId="SCSS-COMPILE-ONLY" binary  />
+        <label for="SCSS-COMPILE-ONLY">SCSS -> CSSへのコンパイルのみを行う</label>
+    </div>
     </div>
   </div>
 </template>

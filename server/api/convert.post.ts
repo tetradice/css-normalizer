@@ -96,12 +96,26 @@ function cssStringify(styles: Record<string, any>): string {
 }
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const compiled = await parseSCSS(body.source, true);
-  const scssText = scssStringify(compiled);
-  const scssFormattedText = await prettier.format(scssText, { parser: "scss" });
+  const query = getQuery(event);
+  const scssCompileOnly = query.scssCompileOnly === "true";
 
+  const body = await readBody(event);
+  let processed: string = body.source;
+
+  // scss -> css変換
+  processed = compileSCSS(processed);
+
+  // cssからSCSSに変換
+  if (!scssCompileOnly) {
+    const compiled = await parseSCSS(body.source, true);
+    processed = scssStringify(compiled);
+  }
+
+  // prettierでフォーマット
+  processed = await prettier.format(processed, { parser: "scss" });
+
+  // 結果を返却
   return {
-    result: scssFormattedText,
+    result: processed,
   };
 });
