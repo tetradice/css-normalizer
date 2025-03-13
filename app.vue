@@ -1,20 +1,20 @@
 <script lang="ts" setup>
-import { useDebounce, watchDebounced } from '@vueuse/core';
+import { watchDebounced } from "@vueuse/core";
 
-const source = ref('');
-const output = ref('');
+const source = ref("");
+const output = ref("");
 const scssCompileOnly = ref(false);
 
 const codeMirrorOptions = {
-  mode: 'text/css',
+  mode: "text/css",
 };
 
 watchDebounced(
   [source],
   async () => {
     if (source.value.trim().length >= 1) {
-      const res = await useFetch('/api/convert', {
-        method: 'post',
+      const res = await useFetch("/api/convert", {
+        method: "post",
         body: { source: source.value },
         params: { scssCompileOnly: (scssCompileOnly.value ? true : undefined) },
       });
@@ -23,11 +23,11 @@ watchDebounced(
         output.value = res.data.value.result;
       }
       else {
-        output.value = '[ERROR!]';
+        output.value = "[ERROR!]";
       }
     }
     else {
-      output.value = '';
+      output.value = "";
     }
   },
   { debounce: 500, maxWait: 3000 },
