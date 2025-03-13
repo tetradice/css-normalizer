@@ -1,11 +1,22 @@
-import Aura from "@primevue/themes/aura";
+import Aura from '@primevue/themes/aura';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: "2024-11-01",
+  modules: [
+    '@primevue/nuxt-module',
+    '@nuxtjs/tailwindcss',
+    '@vueuse/nuxt',
+    '@nuxt/eslint',
+  ],
   devtools: { enabled: true },
-  modules: ["@primevue/nuxt-module", "@nuxtjs/tailwindcss", "@vueuse/nuxt"],
-  tailwindcss: {},
+  compatibilityDate: '2024-11-01',
+  eslint: {
+    config: {
+      stylistic: {
+        semi: true,
+      },
+    },
+  },
   primevue: {
     options: {
       theme: {
@@ -13,4 +24,5 @@ export default defineNuxtConfig({
       },
     },
   },
+  tailwindcss: {},
 });

@@ -1,12 +1,12 @@
-import postcss from "postcss";
-import safeParser from "postcss-safe-parser";
-import * as sass from "sass";
-import * as prettier from "prettier";
+import postcss from 'postcss';
+import safeParser from 'postcss-safe-parser';
+import * as sass from 'sass';
+import * as prettier from 'prettier';
 
 // CSS/SCSSをパースしてネスト形式またはフラット形式に変換
 async function parseSCSS(
   content: string,
-  nested: boolean
+  nested: boolean,
 ): Promise<Record<string, any>> {
   const root = await postcss().process(compileSCSS(content), {
     parser: safeParser,
@@ -14,7 +14,7 @@ async function parseSCSS(
   const styles: Record<string, any> = {};
 
   root.root.walkRules((rule) => {
-    const selectors = rule.selector.split(",").map((s) => s.trim());
+    const selectors = rule.selector.split(',').map(s => s.trim());
     const declarations: Record<string, string> = {};
 
     rule.walkDecls((decl) => {
@@ -23,8 +23,9 @@ async function parseSCSS(
 
     for (const selector of selectors) {
       if (nested) {
-        addToNestedStructure(styles, selector.split(" "), declarations);
-      } else {
+        addToNestedStructure(styles, selector.split(' '), declarations);
+      }
+      else {
         styles[selector] = { ...(styles[selector] || {}), ...declarations };
       }
     }
@@ -37,7 +38,7 @@ async function parseSCSS(
 function addToNestedStructure(
   obj: Record<string, any>,
   selectors: string[],
-  declarations: Record<string, string>
+  declarations: Record<string, string>,
 ) {
   if (selectors.length === 0) return;
 
@@ -46,7 +47,8 @@ function addToNestedStructure(
 
   if (selectors.length === 1) {
     obj[key] = { ...(obj[key] || {}), ...declarations };
-  } else {
+  }
+  else {
     addToNestedStructure(obj[key], selectors.slice(1), declarations);
   }
 }
@@ -58,17 +60,18 @@ function compileSCSS(content: string): string {
 
 // ネスト構造をSCSS文字列に変換
 function scssStringify(styles: Record<string, any>, depth = 0): string {
-  let scss = "";
-  const indent = "  ".repeat(depth);
+  let scss = '';
+  const indent = '  '.repeat(depth);
 
   for (const selector in styles) {
-    if (typeof styles[selector] === "object") {
+    if (typeof styles[selector] === 'object') {
       scss += `${indent}${selector} {
 `;
       scss += scssStringify(styles[selector], depth + 1);
       scss += `${indent}}
 `;
-    } else {
+    }
+    else {
       scss += `${indent}${selector}: ${styles[selector]};
 `;
     }
@@ -78,7 +81,7 @@ function scssStringify(styles: Record<string, any>, depth = 0): string {
 
 // フラットなCSS文字列に変換
 function cssStringify(styles: Record<string, any>): string {
-  let css = "";
+  let css = '';
 
   for (const selector in styles) {
     css += `${selector} {
@@ -97,7 +100,7 @@ function cssStringify(styles: Record<string, any>): string {
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
-  const scssCompileOnly = query.scssCompileOnly === "true";
+  const scssCompileOnly = query.scssCompileOnly === 'true';
 
   const body = await readBody(event);
   let processed: string = body.source;
@@ -112,7 +115,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // prettierでフォーマット
-  processed = await prettier.format(processed, { parser: "scss" });
+  processed = await prettier.format(processed, { parser: 'scss' });
 
   // 結果を返却
   return {
